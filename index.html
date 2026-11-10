@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#7657ff">
+<title>BIBLIOTECA LIVROS (EBOOK-S)</title>
+<style>
+:root{--accent:#7657ff;--bg:#f4f3f8;--surface:#fff;--surface2:#ebe9f3;--text:#1d1b2e;--muted:#6f6d85;--border:rgba(40,35,70,.13);--min:160px;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+body[data-theme=dark]{--bg:#10111a;--surface:#191b28;--surface2:#262840;--text:#f2f1fb;--muted:#a5a4b8;--border:rgba(255,255,255,.12)}
+body[data-theme=neon]{--bg:#080d12;--surface:#101b20;--surface2:#16282f;--text:#eafff8;--muted:#9cbab0;--border:rgba(0,255,190,.22)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.i{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg),transparent 6%);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.bar{max-width:1280px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.mark{width:40px;height:40px;border-radius:11px;background:var(--accent);color:#fff;display:grid;place-items:center}
+.brand h1{margin:0;font:700 20px/1.1 var(--serif)}.brand small{color:var(--muted);font-size:12px}
+.search{flex:1;min-width:200px;max-width:520px;margin:0 auto;position:relative}
+.search .i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;height:42px;padding:0 14px 0 40px;border:1px solid var(--border);border-radius:12px;background:var(--surface);outline:none}
+.search input:focus{border-color:var(--accent)}
+.tools{display:flex;gap:8px;margin-left:auto}
+.ib{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center}
+.ib:hover{border-color:var(--accent)}.spin .i{animation:sp .9s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+main{max-width:1280px;margin:auto;padding:18px}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--min),46%),1fr));gap:22px 16px}
+.book{content-visibility:auto;contain-intrinsic-size:auto 320px;min-width:0}
+.cover{display:grid;place-items:center;width:100%;aspect-ratio:1/1.414;position:relative;overflow:hidden;border-radius:3px 8px 8px 3px;color:#fff;background:linear-gradient(150deg,color-mix(in srgb,var(--accent),#fff 12%),color-mix(in srgb,var(--accent),#000 55%));box-shadow:0 8px 20px rgba(20,15,50,.22);transition:transform .15s}
+.cover:hover{transform:translateY(-3px)}
+.cover .i{width:34%;height:34%;opacity:.55;stroke-width:1.2}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff}
+.cover:after{content:"";position:absolute;inset:0 auto 0 0;width:9px;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.18) 55%,transparent);pointer-events:none}
+.book h4{margin:10px 0 8px;font:600 14px/1.3 var(--serif);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.acts{display:flex;gap:6px}
+.acts button{height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600}
+.read{flex:1;background:var(--accent);color:#fff}.dl{width:34px;background:var(--surface2)}
+.empty{grid-column:1/-1;text-align:center;padding:50px 16px;color:var(--muted);border:1px dashed var(--border);border-radius:14px}
+#end{height:1px}
+#toast{position:fixed;left:50%;bottom:18px;transform:translate(-50%,20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:30;max-width:90vw}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.veil{position:fixed;inset:0;background:rgba(5,5,15,.5);opacity:0;pointer-events:none;transition:.2s;z-index:20}
+.veil.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(380px,100%);background:var(--surface);border-left:1px solid var(--border);z-index:21;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+.dh h2{margin:0;font:700 18px var(--serif)}
+.db{padding:6px 18px 24px;overflow:auto}
+.row{padding:14px 0;border-bottom:1px solid var(--border)}.row:last-child{border:0}
+.row>label,.row>b{display:block;font-weight:650;font-size:14px;margin-bottom:9px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;height:38px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;background:var(--bg)}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+select{width:100%;height:40px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+.line{display:flex;gap:8px;align-items:center}
+.btn{display:flex;align-items:center;gap:8px;width:100%;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font-size:13px;margin-top:8px}
+.btn:hover{border-color:var(--accent)}
+.info{font-size:12px;color:var(--muted);margin:0 0 4px}
+.modal{position:fixed;inset:0;background:#080910;z-index:40;display:none;flex-direction:column;padding:10px}.modal.on{display:flex}
+.mt{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:2px 2px 10px}
+.mt span{font:600 15px var(--serif);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt button{width:40px;height:40px;border-radius:10px;background:#292936;color:#fff;display:grid;place-items:center}
+.modal iframe{flex:1;width:100%;border:0;border-radius:10px;background:#fff}
+@media(max-width:640px){.bar{padding:10px 12px}.search{order:3;flex-basis:100%;max-width:none}.brand small{display:none}main{padding:14px 12px}.grid{gap:18px 12px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body data-theme="light">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 7h7M8 11h5"/></symbol>
+<symbol id="i-read" viewBox="0 0 24 24"><path d="M2 5c3-1 6-1 10 1 4-2 7-2 10-1v14c-3-1-6-1-10 1-4-2-7-2-10-1z"/><path d="M12 6v14"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4l2-2M20 20v-5h-5"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5l1.6 2.6 3-.7.9 2.9 2.9.9-.7 3 2.6 1.6-2.6 1.6.7 3-2.9.9-.9 2.9-3-.7L12 21.5l-1.6-2.6-3 .7-.9-2.9-2.9-.9.7-3L2.7 12l2.6-1.6-.7-3 2.9-.9.9-2.9 3 .7z"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+</defs></svg>
+
+<header><div class="bar">
+ <div class="brand"><div class="mark"><svg class="i"><use href="#i-book"/></svg></div><div><h1>Biblioteca</h1><small>Ebooks em PDF</small></div></div>
+ <div class="search"><svg class="i"><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar livro pelo nome" autocomplete="off" aria-label="Buscar livro"></div>
+ <div class="tools"><button class="ib" id="rf" title="Atualizar lista" aria-label="Atualizar lista"><svg class="i"><use href="#i-refresh"/></svg></button><button class="ib" id="gear" title="Configurações" aria-label="Configurações"><svg class="i"><use href="#i-gear"/></svg></button></div>
+</div></header>
+
+<main>
+ <div class="meta"><span id="count">Carregando…</span></div>
+ <section class="grid" id="grid"></section>
+ <div id="end"></div>
+</main>
+
+<div class="veil" id="veil"></div>
+<aside class="drawer" id="drawer" aria-label="Configurações" aria-hidden="true">
+ <div class="dh"><h2>Configurações</h2><button class="ib" id="dx" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button></div>
+ <div class="db">
+  <div class="row"><b>Tema</b><div class="seg" id="segT">
+   <button data-t="light"><svg class="i"><use href="#i-sun"/></svg>Claro</button>
+   <button data-t="dark"><svg class="i"><use href="#i-moon"/></svg>Escuro</button>
+   <button data-t="neon"><svg class="i"><use href="#i-bolt"/></svg>Neon</button></div></div>
+  <div class="row"><label for="color">Cor principal</label><div class="line"><input type="color" id="color" value="#7657ff"><button class="btn" id="rc" style="margin:0">Restaurar cor</button></div></div>
+  <div class="row"><b>Tamanho das capas</b><div class="seg" id="segS"><button data-s="120">Pequena</button><button data-s="160">Média</button><button data-s="220">Grande</button></div></div>
+  <div class="row"><label for="sort">Ordem</label><select id="sort"><option value="az">Nome: A → Z</option><option value="za">Nome: Z → A</option><option value="recent">Adicionados recentemente</option></select></div>
+  <div class="row"><b>Dados salvos neste aparelho</b><p class="info" id="info"></p>
+   <button class="btn" id="rl"><svg class="i"><use href="#i-refresh"/></svg>Atualizar lista agora</button>
+   <button class="btn" id="cc"><svg class="i"><use href="#i-trash"/></svg>Limpar capas salvas</button>
+   <button class="btn" id="cl"><svg class="i"><use href="#i-trash"/></svg>Limpar lista salva</button></div>
+ </div>
+</aside>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Leitor de PDF"><div class="mt"><span id="mtitle"></span><button id="mx" aria-label="Fechar leitura"><svg class="i"><use href="#i-x"/></svg></button></div><div id="area" style="flex:1;display:flex;min-height:0"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+const API="https://api-kalidade.vercel.app/api/github.js?repo=kalidade-br/pdf-library";
+const K={books:"kalidade_library_books_v2",theme:"kalidade_library_theme_v1",color:"kalidade_library_color_v1",sort:"kalidade_library_sort_v1",size:"kalidade_library_size_v1",cov:"kalidade_library_cover_v1:",idx:"kalidade_library_covers_idx_v1"};
+const $=id=>document.getElementById(id),PAGE=48,ACC="#7657ff";
+const gs=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:v}catch(_){return f}};
+const ss=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(_){return false}};
+const rm=k=>{try{localStorage.removeItem(k)}catch(_){}};
+const ic=n=>'<svg class="i"><use href="#i-'+n+'"/></svg>';
+let books=[],list=[],shown=0,tt,busy=false;
+
+const clean=n=>String(n||"").replace(/\.pdf$/i,"").replace(/[_-]+/g," ").trim();
+const src=b=>"/"+encodeURIComponent(b.name);
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),3500)}
+function normalize(d){const f=d&&d.files&&typeof d.files==="object"?d.files:{};return Object.entries(f).filter(([n,x])=>x&&x.type==="file"&&/\.pdf$/i.test(n)&&n.toLowerCase()!=="index.html").map(([name,x])=>({id:x.path||name,name,title:clean(name),raw:x.raw||"",addedAt:Date.now()})).filter(b=>b.raw)}
+function loadBooks(){try{const p=JSON.parse(gs(K.books,"[]"));return Array.isArray(p)?p.filter(b=>b&&b.name&&b.raw).map(b=>({...b,title:b.title||clean(b.name)})):[]}catch(_){return[]}}
+function saveBooks(){ss(K.books,JSON.stringify(books.map(({id,name,title,raw,addedAt})=>({id,name,title,raw,addedAt}))))}
+
+/* ---- capas salvas ---- */
+const getIdx=()=>{try{const a=JSON.parse(gs(K.idx,"[]"));return Array.isArray(a)?a:[]}catch(_){return[]}};
+function saveCover(id,url){let idx=getIdx().filter(x=>x!==id),ok=ss(K.cov+id,url),n=0;while(!ok&&idx.length&&n++<40){rm(K.cov+idx.shift());ok=ss(K.cov+id,url)}if(ok)idx.push(id);ss(K.idx,JSON.stringify(idx));return ok}
+function pruneCovers(){const ids=new Set(books.map(b=>b.id));const idx=getIdx().filter(id=>ids.has(id)||(rm(K.cov+id),false));ss(K.idx,JSON.stringify(idx))}
+function setImg(box,url){if(box.querySelector("img"))return;const im=new Image();im.alt="";im.decoding="async";im.src=url;box.appendChild(im)}
+
+/* ---- gerador de capas (só quando não existe no cache) ---- */
+let pdfP;const queue=[];let active=0;
+function loadPdf(){return pdfP||(pdfP=new Promise((ok,no)=>{if(window.pdfjsLib)return ok(pdfjsLib);const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";s.onload=()=>{pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";ok(pdfjsLib)};s.onerror=()=>{pdfP=null;no(Error("pdf.js"))};document.head.appendChild(s)}))}
+function pump(){while(active<2&&queue.length){const [b,box]=queue.shift();if(!box.isConnected)continue;active++;make(b,box).finally(()=>{active--;pump()})}}
+async function make(b,box){try{const p=await loadPdf();const doc=await p.getDocument({url:src(b),withCredentials:true,disableAutoFetch:true}).promise;const pg=await doc.getPage(1);const v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:Math.min(2,320/v0.width)});const c=document.createElement("canvas");c.width=v.width;c.height=v.height;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);await pg.render({canvasContext:x,viewport:v}).promise;const url=c.toDataURL("image/jpeg",.72);c.width=c.height=0;doc.destroy();saveCover(b.id,url);if(box.isConnected)setImg(box,url)}catch(e){console.info("Capa indisponível:",b.name)}}
+const cobs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){cobs.unobserve(e.target);queue.push([e.target._b,e.target]);pump()}}),{rootMargin:"600px"});
+
+/* ---- lista ---- */
+function card(b){const a=document.createElement("article");a.className="book";
+a.innerHTML='<button class="cover">'+ic("book")+'</button><h4></h4><div class="acts"><button class="read">'+ic("read")+'Ler</button><button class="dl" title="Baixar PDF" aria-label="Baixar PDF">'+ic("down")+'</button></div>';
+const cv=a.firstChild,h=a.children[1];h.textContent=b.title;h.title=b.title;cv.setAttribute("aria-label","Ler "+b.title);cv._b=b;
+const hit=gs(K.cov+b.id,"");if(hit)setImg(cv,hit);else cobs.observe(cv);
+cv.onclick=a.querySelector(".read").onclick=()=>openReader(b);a.querySelector(".dl").onclick=()=>download(b);
+$("grid").appendChild(a)}
+function more(){const end=Math.min(shown+PAGE,list.length);for(;shown<end;shown++)card(list[shown]);if(shown<list.length){eobs.unobserve($("end"));eobs.observe($("end"))}}
+const eobs=new IntersectionObserver(es=>{if(es[0].isIntersecting)more()},{rootMargin:"900px"});
+function render(){const q=$("q").value.trim().toLocaleLowerCase("pt-BR"),s=gs(K.sort,"az");list=books.filter(b=>b.title.toLocaleLowerCase("pt-BR").includes(q));
+if(s==="az")list.sort((a,b)=>a.title.localeCompare(b.title,"pt-BR"));else if(s==="za")list.sort((a,b)=>b.title.localeCompare(a.title,"pt-BR"));else list.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
+$("count").textContent=list.length+(list.length===1?" livro":" livros")+(q?" encontrados":"");
+cobs.disconnect();queue.length=0;$("grid").replaceChildren();shown=0;
+if(!list.length){const e=document.createElement("div");e.className="empty";e.textContent=q?"Nenhum livro com esse nome. Tente outra busca.":"Nenhum PDF por aqui ainda. Toque em atualizar para buscar de novo.";$("grid").appendChild(e);return}
+more()}
+
+/* ---- leitor / download ---- */
+function openReader(b){$("mtitle").textContent=b.title;const f=document.createElement("iframe");f.title="Leitor de "+b.title;f.src=src(b);f.allow="fullscreen";$("area").replaceChildren(f);$("modal").classList.add("on");document.body.style.overflow="hidden"}
+function closeReader(){$("modal").classList.remove("on");$("area").replaceChildren();document.body.style.overflow=""}
+function download(b){const a=document.createElement("a");a.href=src(b);a.download=b.name;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}
+
+/* ---- atualizar ---- */
+async function refresh(quiet){if(busy)return;busy=true;$("rf").classList.add("spin");if(!quiet)toast("Consultando a biblioteca online…");
+try{const r=await fetch(API,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();if(d.success!==true||!d.files)throw Error("Resposta inválida");const fresh=normalize(d);
+if(fresh.length||!books.length){const old=new Map(books.map(b=>[b.id,b.addedAt]));const changed=fresh.length!==books.length||fresh.some(b=>!old.has(b.id));books=fresh.map(b=>({...b,addedAt:old.get(b.id)||b.addedAt}));saveBooks();pruneCovers();if(changed||!list.length)render()}
+if(!quiet||books.length)toast(books.length+" ebook(s) na biblioteca.")}
+catch(e){console.error(e);if(!list.length)render();toast(books.length?"Sem conexão. Mostrando a lista salva.":"Não foi possível carregar a biblioteca.")}
+finally{busy=false;$("rf").classList.remove("spin")}}
+
+/* ---- configurações ---- */
+function applySettings(){let t=gs(K.theme,"light"),c=gs(K.color,ACC),z=gs(K.size,"160");if(!["light","dark","neon"].includes(t))t="light";if(!/^#[0-9a-f]{6}$/i.test(c))c=ACC;if(!["120","160","220"].includes(z))z="160";
+document.body.dataset.theme=t;document.documentElement.style.setProperty("--accent",c);document.documentElement.style.setProperty("--min",z+"px");$("color").value=c;$("sort").value=gs(K.sort,"az");
+document.querySelectorAll("#segT button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===t));document.querySelectorAll("#segS button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===z))}
+function info(){const idx=getIdx();let kb=0;idx.forEach(id=>kb+=gs(K.cov+id,"").length);$("info").textContent=books.length+" livros na lista • "+idx.length+" capas salvas (~"+Math.round(kb/1024)+" KB)"}
+function drawer(on){$("drawer").classList.toggle("on",on);$("veil").classList.toggle("on",on);$("drawer").setAttribute("aria-hidden",!on);if(on){info();$("dx").focus()}else $("gear").focus()}
+$("gear").onclick=()=>drawer(true);$("dx").onclick=$("veil").onclick=()=>drawer(false);
+$("segT").onclick=e=>{const b=e.target.closest("button");if(b){ss(K.theme,b.dataset.t);applySettings()}};
+$("segS").onclick=e=>{const b=e.target.closest("button");if(b){ss(K.size,b.dataset.s);applySettings()}};
+$("color").oninput=e=>{ss(K.color,e.target.value);applySettings()};$("rc").onclick=()=>{ss(K.color,ACC);applySettings()};
+$("sort").onchange=e=>{ss(K.sort,e.target.value);render()};
+$("rl").onclick=()=>{refresh(false);drawer(false)};$("rf").onclick=()=>refresh(false);
+$("cc").onclick=()=>{getIdx().forEach(id=>rm(K.cov+id));rm(K.idx);info();render();toast("Capas salvas removidas. Elas voltam a ser geradas ao rolar.")};
+$("cl").onclick=()=>{rm(K.books);books=[];info();render();toast("Lista salva removida.")};
+let st;$("q").oninput=()=>{clearTimeout(st);st=setTimeout(render,140)};
+$("mx").onclick=closeReader;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeReader();drawer(false)}});
+
+applySettings();books=loadBooks();render();refresh(true);
+})();
+</script>
+</body>
+</html>
